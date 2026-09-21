@@ -1,0 +1,105 @@
+# Brownout — Local X Filter
+
+A source-available Chrome extension for filtering your own X feed by the location **X reports in “About this account”**, or your explicitly marked personal country notes. Runs locally on this laptop. No account signup, API key, server, subscription or third-party extension is needed.
+
+## Update an existing installation
+
+Keep the existing folder name and path. Replace its extension files, then open `chrome://extensions` and click the extension’s **Reload** button. Refresh X tabs and the control page. **Do not Remove or install a second copy**: reloading the same installation retains settings, cache and manual notes. The name change from Atlas to Brownout does not itself change its identity.
+
+## Personal country notes
+
+Click any location pill on a post, including Unknown or Pending. In **Know this account’s country?**, search/select a country or type its three-letter code, then click **Save my location**. The note applies immediately and is stored locally by handle. Its pill is marked **✎**, has a dashed border, and says “Set by you” in its tooltip. It is not presented as X-sourced information.
+
+Open the pill again to edit it or **Remove my override**. The control page’s searchable **Field notes** ledger can also remove notes. Overrides take precedence over X, skip further automatic lookups, and do not expire. Clearing the location cache does not remove them. If a handle changes ownership, review its note. A settings export includes notes; importing an older Atlas export preserves your existing notes.
+
+## Queue and resource usage
+
+The waiting queue is rebuilt from nearby posts, deduplicated and capped at **200 accounts per tab**. Off-screen candidates are dropped and can re-enter if you scroll back. The resolved-location cache remains capped at **5,000 accounts**. “Show once” memory is capped at 200 posts. Only visible X tabs request new locations; requests are globally paced across tabs and respect cooldowns. Expired results are refreshed on demand when you encounter their authors, not by sweeping your entire cache. X network latency and rate limits are the main constraint, rather than processing the small queue.
+
+## Appearance
+
+Brownout uses a glacier-blue medieval armoury theme with original vector knight artwork. Click Sir Cache to greet him; saving settings makes him salute. Turn off “Little knight animations & flourishes” or use your system’s reduced-motion preference for a still interface. All graphics are bundled locally, and the feed itself stays free of animated decorations.
+
+## Install on this Mac
+
+1. Unzip `brownout-x-filter.zip`. Move the extracted `x-location-filter` folder to a permanent location, such as Documents. Keep the entire folder together.
+2. Open Chrome and type `chrome://extensions` in the address bar.
+3. Turn on **Developer mode** at the top right.
+4. Click **Load unpacked**, and select the **x-location-filter folder containing manifest.json**. Select the folder, not the zip or an individual file.
+5. Click Chrome’s puzzle-piece Extensions button and pin **Brownout — Local X Filter**. Open its icon, then **Open map & country list**.
+6. **Refresh every X tab that was open during installation.** Browse X normally. Badges will resolve progressively while your X tab is visible.
+
+The folder already supplied beside the zip can also be loaded directly. Chrome needs that folder to remain in place. The local preview web server is not needed for the installed extension.
+
+## Your starting rules
+
+India, Pakistan, Africa and South America are selected: 75 countries and separately listed territories in the bundled geographical dataset. Matching posts are hidden. The outer author governs each post. Blocked quoted authors collapse only their embedded quote, with a Show quote button. For reposts, the sharing account governs when X exposes its handle in the repost context; otherwise the original author is the fallback. Replies are evaluated individually.
+
+**Balanced mode is the default:** pending and unavailable locations remain visible. For stronger exclusion, set **Unknown or pending locations → Strict**. This hides posts until X provides a usable location, and continues to hide those X cannot resolve. The feed may initially be sparse while its queue catches up. Neither setting can identify someone's actual residence with certainty.
+
+## Controls
+
+- **Map:** click a country to select/deselect it; use +/− to zoom and drag to pan. Small territories use dots. Map and list are linked. Tab to a map country and use Enter or Space for keyboard selection.
+- **List:** search country names or three-letter codes. Check means filter. The Selected tab shows only your selection.
+- **Regions:** click a region to select its entire membership; click a fully selected region again to clear it. A diagonal chip indicates a partial selection. Change any individual country afterwards.
+- **Undo:** reverses the last control change. Click again to redo it.
+- **Matching posts:** hide completely; collapse to a line with Show once; or show all posts with labels only.
+- **Pause:** the switch stops automatic lookups and restores filtered posts. It takes a moment for open tabs to update.
+- **Badge:** flag + three-letter code, code alone, or full country name. Click a badge to see X's raw value, the last checked time, a link to the source and an always-allow button.
+- **Exceptions:** enter handles in Always welcome. Each author is evaluated separately: an allowed poster can still quote a filtered author when quote filtering is enabled.
+- **Broad regions:** if X reports only “Asia”, that remains a region label. By default it is filtered only when every country in that region is selected. Choose the overlap option to filter even if only part is selected.
+- **Export/import:** saves/restores settings, account exceptions and manual country notes. Old Atlas settings exports can still be imported. Exports do not contain location-cache entries or session credentials.
+- **Clear location cache:** removes stored account locations. Open X tabs will refill it as needed; pause first if you want it to stay empty.
+
+## Source and limits
+
+Automatic lookups use only `about_profile.account_based_in`, from X's public-facing AboutAccountQuery response. Your optional, explicitly marked manual overrides take precedence. Automatic lookups do not use the profile location, bio, language, name, IP geolocation services, “Connected via” app-store country or guesses about nationality. If X marks the location potentially inaccurate, the detail panel says so.
+
+X describes this field as inferred from aggregated IP addresses; account holders can display a broader region. It is not a verified residence, nationality, or live location. The extension cannot reveal information that X does not provide. Unrecognised regional descriptions remain explicitly unmapped and follow the unknown policy. X may change its interface or internal endpoint; maintenance may then be needed.
+
+Scope: standard post articles in the Home feed, replies, search, profiles and similar X web timelines. It does not filter DMs, trends, notifications without post articles, or X's mobile app. Embedded media and a post's subject are not geolocated. Cached results use handles and can be stale if a handle changes ownership; use Clear location cache if necessary.
+
+## If badges stay pending
+
+1. Confirm the extension is enabled, sign in to X normally, and refresh the X tab.
+2. Keep the X tab visible. New accounts are looked up one at a time, roughly every 4 seconds, across all tabs. A page with many unfamiliar accounts takes time.
+3. Open an account’s **About this account** page, then return to your feed. The extension learns the current query identifier from X's own request. The control panel includes a shortcut. A fresh query identifier propagates to other tabs automatically.
+4. Check the connection message in the control panel. An X rate limit pauses new lookups for 15 minutes; cached locations still work. Network/session problems retry after a minute.
+5. If X has materially changed its response or request requirements, the extension needs an update. It will show a connection issue instead of substituting self-reported locations.
+
+After replacing any extension files: open `chrome://extensions`, click Brownout's reload icon, then refresh X. To uninstall, click Remove there and delete the local folder if no longer wanted.
+
+## Privacy and permissions
+
+The only API permission is `storage`. Content scripts run on **https://x.com/** only. Chrome needs permission to read and change that site's pages so the extension can add badges and hide posts. It requests no history, cookies API, downloads API, debugger, broad tabs, or all-sites permission.
+
+The page bridge observes X's own GraphQL request headers to perform read-only location queries with your existing session. Those authentication headers stay in page memory; they are not messaged to the extension, written to disk, logged or exported. Requests go only to X. X can see these requests, as it can see your normal use of its service.
+
+Stored locally: settings and up to 5,000 manual country notes; up to 5,000 handle/location/check-time records; X's accuracy flag; the current non-secret query identifier; lookup scheduling timestamps. Locations expire for reuse after seven days, or six hours when X supplies no location. Old entries are replaced as the bounded cache fills. Temporary connection statistics use Chrome's session storage. No post text, browsing-history log or personal profile content is stored. No remote code, analytics, cloud sync, telemetry or automatic updater.
+
+Because the bridge runs within X's page, it is not a security boundary against X itself. The extension is intended to reduce trust in unrelated services, not hide activity from X.
+
+## Verification
+
+The current X page and actual AboutAccountQuery response schema were inspected on 21 September 2026. Automated tests cover location matching, cache expiry, unknown and region policies, content filtering, quote authors, DOM recycling, pause, request validation, source-field selection and rate-limit responses. Map/list synchronisation and undo were exercised in Chrome.
+
+This 1.2 upgrade preserves the existing installation path, extension identity and settings. See TESTING.md for reproducible development tests and live checks.
+
+## Files and data credits
+
+- `manifest.json`: inspect the exact permissions and script scope.
+- `bridge.js`: X-only network integration; `content.js` / `content.css`: feed labels and filtering.
+- `background.js`: local storage, cache writes and shared request pacing.
+- `core.js`: country matching and policy; `options.*` / `popup.*`: controls.
+- `countries.js`: derived country names, aliases, regions, coordinates and codes from [mledoze/countries](https://github.com/mledoze/countries), under ODbL 1.0. This derived database is offered under the same licence; see DATA-LICENSE.txt. Kosovo uses the user-assigned display code XKX, not an official ISO assignment.
+- `map-data.js`: simplified [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/) country outlines, public domain. French Guiana and Svalbard polygons are separated for independent controls. Geographic grouping follows the bundled country dataset; map boundaries are simplified and do not adjudicate territorial claims.
+
+Documentation: [X's explanation of account location](https://help.x.com/en/managing-your-account/how-to-change-country-settings), [Chrome's Load unpacked instructions](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked).
+
+## New in 1.2
+
+The control starts as a slim tab midway down the left edge, clear of the bottom profile button. Open it for an in-tab drawer with the latest 100 filtered matches and Show once for posts still loaded. The drawer stores metadata only, in memory, and clears when the tab reloads.
+
+Save up to 20 named rule profiles on the control page. Profiles include places and filtering preferences; applying a profile preserves the current pause/on state and global personal country notes. Exports include profiles. Pause temporarily for 15, 30 or 60 minutes, or resume early, without changing your selected countries.
+
+Shown countries are dark slate; filtered countries are bright glacier blue. A brief white click pulse fades back to the correct state, including while focused or hovered. Reduced-motion preferences suppress the pulse.

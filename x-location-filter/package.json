@@ -1,0 +1,12 @@
+{
+  "name": "brownout-local-x-filter",
+  "version": "1.2.0",
+  "private": true,
+  "description": "Optional developer tests; not needed to install or run the extension.",
+  "scripts": {
+    "test": "node --test tests/*.test.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "29.1.1"
+  }
+}
